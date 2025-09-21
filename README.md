@@ -41,3 +41,33 @@ Order Service (8082)
     POST /api/orders - Crear pedido (verifica usuario)
     GET /api/orders/user/{userId} - Pedidos por usuario
     GET /api/orders/{id}/user-info - Pedido con info de usuario
+
+
+## Diagrama de arquitectura
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   SISTEMA DE MICROSERVICIOS                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                         │
+│  ┌────────────────────────────┐            REST API           ┌───────────────────────────────────┐     │
+│  │   USER SERVICE             │      ◄───────────────────►    │  ORDER SERVICE                    │     │
+│  │  Puerto: 8081              │            HTTP/JSON          │  Puerto: 8082                     │     │
+│  ├────────────────────────────┤                               ├───────────────────────────────────┤     │
+│  │ - Gestión de usuarios      │                               │ - Gestión de                      │     │
+│  │ - Base de datos H2         │                               │   pedidos                         │     │
+│  │ - API REST                 │                               │ - Base de datos                   │     │
+│  │                            │                               │   H2                              │     │
+│  │ Endpoints:                 │                               │ - API REST                        │     │
+│  │ • GET /api/users           │                               │                                   │     │
+│  │ • POST /api/users          │                               │ Endpoints:                        │     │
+│  │ • GET /api/users/{id}      │                               │ • GET /api/orders                 │     │
+│  │ • GET /api/users/email/{}  │                               │ • POST /api/orders                │     │
+│  └────────────────────────────┘                               │ • GET /api/orders/{id}            │     │
+│                                                               │ • GET /api/orders/user/{}         │     │
+│                                                               │ • GET /api/orders/{id}/user-info  │     │
+│                                                               └───────────────────────────────────┘     │
+│                                                                                                         │
+│  COMUNICACIÓN: Request/Response Síncrona mediante REST                                                  │
+│  BASE DE DATOS: Cada servicio tiene su propia base de datos H2                                          │
+│  INDEPENDENCIA: Los servicios pueden desplegarse por separado                                           │
+│                                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────┘
